@@ -3,6 +3,8 @@ import arxiv
 
 def search_arxiv(query: str, max_results: int = 5):
 
+    client = arxiv.Client()
+
     search = arxiv.Search(
         query=query,
         max_results=max_results,
@@ -11,20 +13,15 @@ def search_arxiv(query: str, max_results: int = 5):
 
     papers = []
 
-    for paper in search.results():
+    for paper in client.results(search):
 
         papers.append(
             {
                 "title": paper.title,
-                "authors": [
-                    author.name
-                    for author in paper.authors
-                ],
+                "authors": [author.name for author in paper.authors],
                 "summary": paper.summary,
-                "published": str(
-                    paper.published.date()
-                ),
-                "url": paper.entry_id
+                "published": str(paper.published.date()),
+                "url": str(paper.entry_id)
             }
         )
 
