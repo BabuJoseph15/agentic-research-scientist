@@ -7,7 +7,8 @@ def main():
         "question": "Can climate change increase dengue outbreaks in India?",
         "papers": [],
         "evidence": [],
-        "analysis": {}
+        "analysis": {},
+        "hypothesis": ""
     }
 
     result = graph.invoke(initial_state)
@@ -40,13 +41,21 @@ def main():
     print("=" * 100)
 
     if result["analysis"]:
+
         for feature, correlation in result["analysis"].items():
 
             print(
                 f"{feature:<25} : {correlation}"
             )
+
     else:
         print("No analysis results available.")
+
+    print("\n" + "=" * 100)
+    print("HYPOTHESIS")
+    print("=" * 100)
+
+    print(result["hypothesis"])
 
 
 if __name__ == "__main__":

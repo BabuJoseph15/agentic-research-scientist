@@ -5,6 +5,7 @@ from state.research_state import ResearchState
 from agents.research_agent import research_agent
 from agents.evidence_agent import evidence_agent
 from agents.analysis_agent import analysis_agent
+from agents.hypothesis_agent import hypothesis_agent
 
 
 # Create workflow
@@ -26,12 +27,17 @@ workflow.add_node(
     analysis_agent
 )
 
-# Set entry point
+workflow.add_node(
+    "hypothesis",
+    hypothesis_agent
+)
+
+# Entry point
 workflow.set_entry_point(
     "research"
 )
 
-# Define workflow path
+# Workflow edges
 workflow.add_edge(
     "research",
     "evidence"
@@ -44,6 +50,11 @@ workflow.add_edge(
 
 workflow.add_edge(
     "analysis",
+    "hypothesis"
+)
+
+workflow.add_edge(
+    "hypothesis",
     END
 )
 
