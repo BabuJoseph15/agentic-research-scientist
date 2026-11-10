@@ -1,32 +1,53 @@
 from graph.workflow import graph
 
-initial_state = {
-    "question":
-    "Can climate change increase dengue outbreaks in India?",
-    "papers": [],
-    "evidence": []
-}
 
-result = graph.invoke(
-    initial_state
-)
+def main():
 
-print("\nResearch Papers Found:\n")
+    initial_state = {
+        "question": "Can climate change increase dengue outbreaks in India?",
+        "papers": [],
+        "evidence": [],
+        "analysis": {}
+    }
 
-for paper in result["papers"]:
+    result = graph.invoke(initial_state)
 
+    print("\n" + "=" * 100)
+    print("RESEARCH PAPERS FOUND")
     print("=" * 100)
 
-    print(
-        f"Title: {paper['title']}"
-    )
+    for idx, paper in enumerate(result["papers"], start=1):
 
-    print(
-        f"Published: {paper['published']}"
-    )
+        print(f"\nPaper {idx}")
+        print("-" * 100)
+        print(f"Title      : {paper['title']}")
+        print(f"Published  : {paper['published']}")
+        print(f"Authors    : {', '.join(paper['authors'])}")
+        print(f"URL        : {paper['url']}")
 
-print("\nEvidence Extracted:\n")
+    print("\n" + "=" * 100)
+    print("EVIDENCE EXTRACTED")
+    print("=" * 100)
 
-for item in result["evidence"]:
+    for idx, evidence in enumerate(result["evidence"], start=1):
 
-    print(item)
+        print(f"\nEvidence {idx}")
+        print(f"Title      : {evidence['title']}")
+        print(f"Published  : {evidence['published']}")
+
+    print("\n" + "=" * 100)
+    print("CORRELATION ANALYSIS")
+    print("=" * 100)
+
+    if result["analysis"]:
+        for feature, correlation in result["analysis"].items():
+
+            print(
+                f"{feature:<25} : {correlation}"
+            )
+    else:
+        print("No analysis results available.")
+
+
+if __name__ == "__main__":
+    main()
