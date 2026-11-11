@@ -1,61 +1,36 @@
+from datetime import datetime
+from pathlib import Path
+
+from dotenv import load_dotenv
+
 from graph.workflow import graph
 
 
 def main():
+    load_dotenv()
+
+    question = input(
+        "Research question [Can climate change increase dengue outbreaks in India?]: "
+    ).strip() or "Can climate change increase dengue outbreaks in India?"
 
     initial_state = {
-        "question": "Can climate change increase dengue outbreaks in India?",
+        "question": question,
         "papers": [],
         "evidence": [],
         "analysis": {},
-        "hypothesis": ""
+        "hypothesis": "",
+        "approval": "",
+        "report": "",
     }
 
     result = graph.invoke(initial_state)
+    print(result["report"])
 
-    print("\n" + "=" * 100)
-    print("RESEARCH PAPERS FOUND")
-    print("=" * 100)
-
-    for idx, paper in enumerate(result["papers"], start=1):
-
-        print(f"\nPaper {idx}")
-        print("-" * 100)
-        print(f"Title      : {paper['title']}")
-        print(f"Published  : {paper['published']}")
-        print(f"Authors    : {', '.join(paper['authors'])}")
-        print(f"URL        : {paper['url']}")
-
-    print("\n" + "=" * 100)
-    print("EVIDENCE EXTRACTED")
-    print("=" * 100)
-
-    for idx, evidence in enumerate(result["evidence"], start=1):
-
-        print(f"\nEvidence {idx}")
-        print(f"Title      : {evidence['title']}")
-        print(f"Published  : {evidence['published']}")
-
-    print("\n" + "=" * 100)
-    print("CORRELATION ANALYSIS")
-    print("=" * 100)
-
-    if result["analysis"]:
-
-        for feature, correlation in result["analysis"].items():
-
-            print(
-                f"{feature:<25} : {correlation}"
-            )
-
-    else:
-        print("No analysis results available.")
-
-    print("\n" + "=" * 100)
-    print("HYPOTHESIS")
-    print("=" * 100)
-
-    print(result["hypothesis"])
+    report_path = Path("reports") / (
+        f"research_report_{datetime.now():%Y%m%d_%H%M%S}.md"
+    )
+    report_path.write_text(result["report"], encoding="utf-8")
+    print(f"\nSaved report to {report_path}")
 
 
 if __name__ == "__main__":

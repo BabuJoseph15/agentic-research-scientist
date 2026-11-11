@@ -1,4 +1,27 @@
+"""
+Hypothesis Agent.
+
+Transforms statistical findings into
+scientific hypotheses that can later
+be approved or rejected by a reviewer.
+
+Author: Babu Guduru
+"""
+
+
 def hypothesis_agent(state):
+    """
+    Generate hypothesis based on
+    analytical findings.
+
+    Args:
+        state (dict):
+            Current workflow state.
+
+    Returns:
+        dict:
+            State updated with a generated hypothesis.
+    """
 
     correlations = state["analysis"]
 
