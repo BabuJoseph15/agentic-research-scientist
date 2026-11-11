@@ -28,6 +28,7 @@ from agents.evidence_agent import evidence_agent
 from agents.analysis_agent import analysis_agent
 from agents.hypothesis_agent import hypothesis_agent
 from agents.approval_agent import approval_agent
+from agents.report_agent import report_agent
 
 
 workflow = StateGraph(ResearchState)
