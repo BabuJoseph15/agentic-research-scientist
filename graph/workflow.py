@@ -1,9 +1,6 @@
 """
 LangGraph Workflow Definition.
 
-This module defines the orchestration layer of the
-Agentic Research Scientist application.
-
 Workflow:
 
     Research Agent
@@ -14,23 +11,12 @@ Workflow:
           ↓
     Hypothesis Agent
           ↓
+    Approval Agent
+          ↓
           END
-
-Responsibilities:
-
-1. Define all workflow nodes.
-2. Define transitions between agents.
-3. Define workflow entry point.
-4. Compile the LangGraph execution graph.
 
 Author:
     Babu Guduru
-
-Project:
-    Agentic Research Scientist
-
-Version:
-    0.1
 """
 
 from langgraph.graph import StateGraph, END
@@ -41,31 +27,11 @@ from agents.research_agent import research_agent
 from agents.evidence_agent import evidence_agent
 from agents.analysis_agent import analysis_agent
 from agents.hypothesis_agent import hypothesis_agent
+from agents.approval_agent import approval_agent
 
 
-# ------------------------------------------------------------------
-# Create Workflow
-# ------------------------------------------------------------------
-"""
-Create a LangGraph workflow instance using the
-shared ResearchState object.
-
-The state object acts as a central memory
-container passed between all agents.
-"""
 workflow = StateGraph(ResearchState)
 
-
-# ------------------------------------------------------------------
-# Register Nodes
-# ------------------------------------------------------------------
-"""
-Register all agents as LangGraph nodes.
-
-Each node receives the current workflow state,
-performs its assigned task, and returns the
-updated state.
-"""
 
 workflow.add_node(
     "research",
@@ -87,43 +53,16 @@ workflow.add_node(
     hypothesis_agent
 )
 
+workflow.add_node(
+    "approval",
+    approval_agent
+)
 
-# ------------------------------------------------------------------
-# Define Entry Point
-# ------------------------------------------------------------------
-"""
-The Research Agent serves as the workflow
-entry point.
-
-Execution begins here whenever the graph
-is invoked.
-"""
 
 workflow.set_entry_point(
     "research"
 )
 
-
-# ------------------------------------------------------------------
-# Define Workflow Edges
-# ------------------------------------------------------------------
-"""
-Define execution order between agents.
-
-State Flow:
-
-Question
-    ↓
-Research Agent
-    ↓
-Evidence Agent
-    ↓
-Analysis Agent
-    ↓
-Hypothesis Agent
-    ↓
-END
-"""
 
 workflow.add_edge(
     "research",
@@ -142,23 +81,13 @@ workflow.add_edge(
 
 workflow.add_edge(
     "hypothesis",
+    "approval"
+)
+
+workflow.add_edge(
+    "approval",
     END
 )
 
-
-# ------------------------------------------------------------------
-# Compile Workflow
-# ------------------------------------------------------------------
-"""
-Compile the workflow into an executable graph.
-
-The compiled graph can be invoked from:
-
-    app.py
-
-Example:
-
-    result = graph.invoke(initial_state)
-"""
 
 graph = workflow.compile()
