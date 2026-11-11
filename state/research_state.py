@@ -1,10 +1,11 @@
 """
 Research State Definition.
 
-Central state container used by LangGraph
-for passing information between agents.
+Shared state object used throughout
+the LangGraph workflow.
 
-Author: Babu Guduru
+Author:
+    Babu Guduru
 """
 
 from typing import TypedDict
@@ -19,7 +20,7 @@ class ResearchState(TypedDict):
             Research question.
 
         papers:
-            Retrieved literature.
+            Retrieved research papers.
 
         evidence:
             Extracted evidence.
@@ -28,7 +29,10 @@ class ResearchState(TypedDict):
             Statistical findings.
 
         hypothesis:
-            Generated hypothesis.
+            Generated scientific hypothesis.
+
+        approval:
+            Human approval decision.
     """
 
     question: str
@@ -36,3 +40,5 @@ class ResearchState(TypedDict):
     evidence: list
     analysis: dict
     hypothesis: str
+    approval: str
+    report: str

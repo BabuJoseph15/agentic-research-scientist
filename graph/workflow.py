@@ -1,6 +1,9 @@
 """
 LangGraph Workflow Definition.
 
+This module defines the orchestration layer of the
+Agentic Research Scientist application.
+
 Workflow:
 
     Research Agent
@@ -13,10 +16,25 @@ Workflow:
           ↓
     Approval Agent
           ↓
+    Report Agent
+          ↓
           END
+
+Responsibilities:
+
+1. Register workflow agents.
+2. Define execution order.
+3. Define workflow entry point.
+4. Compile executable LangGraph workflow.
 
 Author:
     Babu Guduru
+
+Project:
+    Agentic Research Scientist
+
+Version:
+    0.2
 """
 
 from langgraph.graph import StateGraph, END
@@ -31,8 +49,16 @@ from agents.approval_agent import approval_agent
 from agents.report_agent import report_agent
 
 
+# ------------------------------------------------------------------
+# Workflow Initialization
+# ------------------------------------------------------------------
+
 workflow = StateGraph(ResearchState)
 
+
+# ------------------------------------------------------------------
+# Register Workflow Nodes
+# ------------------------------------------------------------------
 
 workflow.add_node(
     "research",
@@ -59,11 +85,24 @@ workflow.add_node(
     approval_agent
 )
 
+workflow.add_node(
+    "report",
+    report_agent
+)
+
+
+# ------------------------------------------------------------------
+# Set Workflow Entry Point
+# ------------------------------------------------------------------
 
 workflow.set_entry_point(
     "research"
 )
 
+
+# ------------------------------------------------------------------
+# Workflow Execution Path
+# ------------------------------------------------------------------
 
 workflow.add_edge(
     "research",
@@ -87,8 +126,17 @@ workflow.add_edge(
 
 workflow.add_edge(
     "approval",
+    "report"
+)
+
+workflow.add_edge(
+    "report",
     END
 )
 
+
+# ------------------------------------------------------------------
+# Compile Workflow
+# ------------------------------------------------------------------
 
 graph = workflow.compile()
