@@ -3,10 +3,11 @@ Approval Agent.
 
 Responsible for collecting human feedback on the
 generated scientific hypothesis before allowing
-report generation.
+the workflow to proceed to report generation.
 
-This agent represents the first Human-in-the-Loop
-(HITL) checkpoint in the workflow.
+This agent implements the first Human-in-the-Loop
+(HITL) checkpoint in the Agentic Research Scientist
+workflow.
 
 Workflow:
 
@@ -16,7 +17,7 @@ Workflow:
          ↓
     Approve / Reject
          ↓
-    Updated State
+    Report Generation
 
 Author:
     Babu Guduru
@@ -33,24 +34,25 @@ def approval_agent(state):
     """
     Request human approval for the generated hypothesis.
 
-    The agent displays the hypothesis and waits for
-    user input before continuing the workflow.
+    The agent displays the generated hypothesis and
+    waits for a valid reviewer decision.
+
+    Accepted Inputs:
+        - yes
+        - no
 
     Args:
         state (dict):
-            Current LangGraph workflow state.
+            Current workflow state.
 
     Returns:
         dict:
-            Updated workflow state containing the
-            approval decision.
+            Updated workflow state containing
+            the approval decision.
 
     State Updates:
-        approval:
+        approval (str):
             Human review decision.
-            Expected values:
-                - yes
-                - no
     """
 
     print("\n")
@@ -68,12 +70,17 @@ def approval_agent(state):
         ).strip().lower()
 
         if approval in ["yes", "no"]:
-            break
+            state["approval"] = approval
+
+            print("\n")
+            print("=" * 100)
+            print("REVIEW DECISION RECORDED")
+            print("=" * 100)
+            print(f"Decision: {approval.upper()}")
+
+            return state
 
         print(
-            "\nInvalid input. Please enter 'yes' or 'no'."
+            "\nInvalid input. Please enter "
+            "'yes' or 'no'."
         )
-
-    state["approval"] = approval
-
-    return state
