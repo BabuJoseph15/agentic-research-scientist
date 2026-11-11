@@ -1,15 +1,10 @@
 """
 Arxiv Literature Search Tool.
-
-This module provides functionality to search academic
-research papers from Arxiv and return structured
-metadata required by the Research Agent.
-
-Author: Babu Guduru
-Project: Agentic Research Scientist
 """
 
 import arxiv
+
+from utils.logger import logger
 
 
 def search_arxiv(
@@ -17,46 +12,68 @@ def search_arxiv(
     max_results: int = 5
 ):
     """
-    Search Arxiv for research papers.
+    Search research papers from Arxiv.
 
     Args:
         query (str):
-            Research question or search keyword.
+            Research question.
 
         max_results (int):
-            Maximum number of papers to retrieve.
+            Number of papers to retrieve.
 
     Returns:
         list:
-            List of dictionaries containing paper details.
+            Retrieved papers.
     """
-
-    client = arxiv.Client()
-
-    search = arxiv.Search(
-        query=query,
-        max_results=max_results,
-        sort_by=arxiv.SortCriterion.Relevance
-    )
 
     papers = []
 
-    for paper in client.results(search):
+    try:
+
+        client = arxiv.Client()
+
+        search = arxiv.Search(
+            query=query,
+            max_results=max_results,
+            sort_by=arxiv.SortCriterion.Relevance
+        )
+
+        for paper in client.results(search):
+
+            papers.append(
+                {
+                    "title": paper.title,
+                    "authors": [
+                        author.name
+                        for author in paper.authors
+                    ],
+                    "summary": paper.summary,
+                    "published": str(
+                        paper.published.date()
+                    ),
+                    "url": str(
+                        paper.entry_id
+                    )
+                }
+            )
+
+    except Exception as ex:
+
+        logger.error(
+            f"Arxiv search failed: {str(ex)}"
+        )
 
         papers.append(
             {
-                "title": paper.title,
-                "authors": [
-                    author.name
-                    for author in paper.authors
-                ],
-                "summary": paper.summary,
-                "published": str(
-                    paper.published.date()
+                "title": "Arxiv API Unavailable",
+                "authors": [],
+                "summary": (
+                    "Research papers could not "
+                    "be retrieved due to API "
+                    "rate limiting."
                 ),
-                "url": str(
-                    paper.entry_id
-                )
+                "published": "N/A",
+                "url": "N/A"
             }
         )
 
