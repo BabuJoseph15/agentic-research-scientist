@@ -1,18 +1,24 @@
 """
 Hypothesis Agent.
 
-Transforms statistical findings into
-scientific hypotheses that can later
-be approved or rejected by a reviewer.
+Uses GPT-4o to generate scientific
+reasoning and hypotheses based on:
 
-Author: Babu Guduru
+- Research Question
+- Literature Evidence
+- Statistical Analysis
+
+Author:
+    Babu Guduru
 """
+
+from services.llm_service import llm
 
 
 def hypothesis_agent(state):
     """
-    Generate hypothesis based on
-    analytical findings.
+    Generate a scientific hypothesis
+    using GPT-4o.
 
     Args:
         state (dict):
@@ -20,42 +26,34 @@ def hypothesis_agent(state):
 
     Returns:
         dict:
-            State updated with a generated hypothesis.
+            Updated workflow state.
     """
 
-    correlations = state["analysis"]
+    prompt = f"""
+You are a senior research scientist.
 
-    strongest_factor = max(
-        correlations,
-        key=correlations.get
-    )
-
-    hypothesis = f"""
 Research Question:
 {state['question']}
 
-Scientific Findings:
+Research Evidence:
+{state['evidence']}
 
-Strongest Factor:
-{strongest_factor}
+Statistical Findings:
+{state['analysis']}
 
-Correlation:
-{correlations[strongest_factor]}
+Your task:
 
-Hypothesis:
+1. Summarize findings.
+2. Identify strongest climate factors.
+3. Explain limitations.
+4. Provide confidence level.
+5. Generate a scientific hypothesis.
 
-Climate-related variables appear to be
-associated with dengue outbreaks.
-
-The strongest observed relationship
-was detected for {strongest_factor}.
-
-Based on the literature review and
-statistical analysis, increasing
-{strongest_factor} may contribute to
-higher dengue incidence rates.
+Use professional scientific writing.
 """
 
-    state["hypothesis"] = hypothesis
+    response = llm.invoke(prompt)
+
+    state["hypothesis"] = response.content
 
     return state
