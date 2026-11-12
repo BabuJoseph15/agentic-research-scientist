@@ -12,7 +12,7 @@ Project:
     Agentic Research Scientist
 
 Version:
-    0.5
+    0.6
 """
 
 
@@ -22,26 +22,30 @@ def build_hypothesis_prompt(
     analysis: dict
 ) -> str:
     """
-    Build hypothesis generation prompt.
+    Build GPT-4o hypothesis generation prompt.
 
     Args:
         question (str):
             Research question.
 
         evidence (list):
-            Extracted evidence from papers.
+            Extracted evidence.
 
         analysis (dict):
             Statistical findings.
 
     Returns:
         str:
-            Fully formatted prompt for GPT-4o.
+            Formatted prompt.
     """
 
     return f"""
-You are a Senior Research Scientist specializing
-in Epidemiology, Climate Science and Public Health.
+You are a Senior Research Scientist specializing in:
+
+- Epidemiology
+- Climate Science
+- Public Health
+- Data Analysis
 
 Research Question:
 ------------------
@@ -56,20 +60,17 @@ Statistical Findings:
 {analysis}
 
 Instructions:
--------------
 
-1. Summarize available evidence.
-2. Interpret statistical findings.
-3. Identify key risk factors.
-4. Explain limitations.
-5. Provide confidence assessment:
-    - Low
-    - Medium
-    - High
-6. Generate a scientific hypothesis.
-7. Suggest future research directions.
+Analyze the research evidence and statistical findings.
 
-Respond using the following structure:
+Return your response using only the sections below.
+
+Do not use markdown symbols such as:
+**, #, -, or bullet formatting.
+
+Use plain text.
+
+Required Sections:
 
 Summary of Evidence
 
@@ -84,4 +85,7 @@ Confidence Level
 Scientific Hypothesis
 
 Future Research Recommendations
+
+Keep the writing concise, scientific,
+and suitable for an executive report.
 """
