@@ -1,12 +1,22 @@
 """
 Hypothesis Agent.
 
-Uses GPT-4o to generate scientific reasoning
-and research hypotheses based on:
+Uses GPT-4o to generate scientific
+reasoning and research hypotheses.
+
+Inputs:
 
 - Research Question
-- Scientific Evidence
+- Research Evidence
 - Statistical Findings
+
+Outputs:
+
+- Scientific Findings
+- Risk Factors
+- Limitations
+- Confidence Assessment
+- Scientific Hypothesis
 
 Author:
     Babu Guduru
@@ -15,10 +25,16 @@ Project:
     Agentic Research Scientist
 
 Version:
-    0.4
+    0.5
 """
 
-from services.llm_service import llm
+from services.llm_service import (
+    llm
+)
+
+from prompts.hypothesis_prompt import (
+    build_hypothesis_prompt
+)
 
 from utils.logger import logger
 
@@ -29,48 +45,55 @@ def hypothesis_agent(state):
 
     Args:
         state (dict):
-            Current workflow state.
+            Current LangGraph workflow state.
 
     Returns:
         dict:
             Updated workflow state containing
-            the generated hypothesis.
+            GPT-generated hypothesis.
     """
 
     logger.info(
         "Hypothesis Agent Started"
     )
 
-    prompt = f"""
-You are a senior epidemiologist and climate researcher.
+    try:
 
-Research Question:
-{state['question']}
+        prompt = (
+            build_hypothesis_prompt(
+                question=
+                state["question"],
 
-Research Evidence:
-{state['evidence']}
+                evidence=
+                state["evidence"],
 
-Statistical Findings:
-{state['analysis']}
+                analysis=
+                state["analysis"]
+            )
+        )
 
-Instructions:
+        response = (
+            llm.invoke(prompt)
+        )
 
-1. Summarize the evidence.
-2. Interpret the statistical findings.
-3. Identify the strongest risk factors.
-4. Mention limitations.
-5. Provide a confidence assessment.
-6. Generate a scientific hypothesis.
+        state["hypothesis"] = (
+            response.content
+        )
 
-Use professional scientific language.
-"""
+        logger.info(
+            "Hypothesis successfully generated"
+        )
 
-    response = llm.invoke(prompt)
+    except Exception as ex:
 
-    state["hypothesis"] = response.content
+        logger.error(
+            f"Hypothesis generation failed: "
+            f"{str(ex)}"
+        )
 
-    logger.info(
-        "Hypothesis successfully generated"
-    )
+        state["hypothesis"] = (
+            "Unable to generate "
+            "scientific hypothesis."
+        )
 
     return state
