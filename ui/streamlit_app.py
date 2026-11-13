@@ -14,8 +14,8 @@ Version:
     1.0
 """
 
-import sys
 import os
+import sys
 
 from pathlib import Path
 
@@ -36,7 +36,9 @@ if str(PROJECT_ROOT) not in sys.path:
 # Imports
 # --------------------------------------------------
 
-from graph.workflow import graph
+from graph.ui_workflow import (
+    ui_graph
+)
 
 from agents.report_agent import (
     report_agent
@@ -44,7 +46,7 @@ from agents.report_agent import (
 
 
 # --------------------------------------------------
-# Helpers
+# Session State Initialization
 # --------------------------------------------------
 
 def initialize_state():
@@ -64,9 +66,13 @@ def initialize_state():
     }
 
 
+# --------------------------------------------------
+# Workflow Execution
+# --------------------------------------------------
+
 def run_workflow(question: str):
     """
-    Execute workflow.
+    Execute UI workflow.
 
     Args:
         question (str):
@@ -81,7 +87,7 @@ def run_workflow(question: str):
 
     state["question"] = question
 
-    return graph.invoke(state)
+    return ui_graph.invoke(state)
 
 
 # --------------------------------------------------
@@ -113,7 +119,7 @@ Generate research insights using:
     )
 
     # --------------------------------------------------
-    # Research Question
+    # Question Input
     # --------------------------------------------------
 
     question = st.text_area(
@@ -126,7 +132,7 @@ Generate research insights using:
     )
 
     # --------------------------------------------------
-    # Run Workflow
+    # Run Analysis
     # --------------------------------------------------
 
     if st.button(
@@ -134,7 +140,7 @@ Generate research insights using:
     ):
 
         with st.spinner(
-            "Running Agentic Workflow..."
+            "Running Agentic Research Workflow..."
         ):
 
             result = run_workflow(
@@ -150,7 +156,7 @@ Generate research insights using:
         )
 
     # --------------------------------------------------
-    # Wait Until Data Exists
+    # Wait Until Workflow Completes
     # --------------------------------------------------
 
     if (
@@ -164,36 +170,52 @@ Generate research insights using:
     ]
 
     # --------------------------------------------------
-    # Papers
+    # Research Papers
     # --------------------------------------------------
 
     st.header(
         "📚 Research Papers"
     )
 
-    for paper in result["papers"]:
+    for paper in result.get(
+        "papers",
+        []
+    ):
 
         with st.expander(
-            paper["title"]
+            paper.get(
+                "title",
+                "Unknown Paper"
+            )
         ):
 
             st.write(
                 f"**Published:** "
-                f"{paper['published']}"
+                f"{paper.get('published', 'N/A')}"
             )
 
-            st.write(
-                f"**Authors:** "
-                f"{', '.join(paper['authors'])}"
+            authors = paper.get(
+                "authors",
+                []
             )
+
+            if authors:
+
+                st.write(
+                    "**Authors:**"
+                )
+
+                st.write(
+                    ", ".join(authors)
+                )
 
             st.write(
                 f"**URL:** "
-                f"{paper['url']}"
+                f"{paper.get('url', 'N/A')}"
             )
 
     # --------------------------------------------------
-    # Analysis
+    # Statistical Analysis
     # --------------------------------------------------
 
     st.header(
@@ -201,73 +223,91 @@ Generate research insights using:
     )
 
     st.json(
-        result["analysis"]
+        result.get(
+            "analysis",
+            {}
+        )
     )
 
     # --------------------------------------------------
-    # Hypothesis
+    # GPT Output
     # --------------------------------------------------
 
     st.header(
-        "🧠 GPT Scientific Analysis"
+        "🧠 GPT-4o Scientific Analysis"
     )
 
     st.text_area(
         label="Generated Hypothesis",
-        value=result["hypothesis"],
-        height=450
+        value=result.get(
+            "hypothesis",
+            ""
+        ),
+        height=500
     )
 
     # --------------------------------------------------
-    # Human Approval
+    # Human Review
     # --------------------------------------------------
 
     st.header(
         "✅ Human Review"
     )
 
-    decision = st.radio(
+    approval = st.radio(
         "Review Decision",
         [
             "Approve",
             "Reject"
-        ]
+        ],
+        horizontal=True
     )
 
+    # --------------------------------------------------
+    # Generate Report
+    # --------------------------------------------------
+
     if st.button(
-        "Submit Review"
+        "📄 Generate Final Report"
     ):
 
         result["approval"] = (
             "yes"
-            if decision == "Approve"
+            if approval == "Approve"
             else "no"
         )
 
-        result = report_agent(
-            result
+        updated_result = (
+            report_agent(result)
         )
 
         st.session_state[
             "workflow_result"
-        ] = result
+        ] = updated_result
 
         st.success(
-            f"Hypothesis {decision.lower()}d."
+            f"Hypothesis "
+            f"{approval.lower()}ed."
         )
 
     # --------------------------------------------------
-    # Report
+    # Display Report
     # --------------------------------------------------
 
-    if result.get("report"):
+    result = st.session_state[
+        "workflow_result"
+    ]
+
+    if result.get(
+        "report"
+    ):
 
         st.header(
-            "📄 Research Report"
+            "📑 Final Research Report"
         )
 
         st.text_area(
-            label="Final Report",
+            label="Report",
             value=result["report"],
             height=500
         )
@@ -277,7 +317,8 @@ Generate research insights using:
     # --------------------------------------------------
 
     pdf_path = result.get(
-        "pdf_path"
+        "pdf_path",
+        ""
     )
 
     if (
@@ -286,22 +327,27 @@ Generate research insights using:
     ):
 
         st.header(
-            "📥 Download PDF"
+            "📥 Download PDF Report"
         )
 
         with open(
             pdf_path,
             "rb"
-        ) as file:
+        ) as pdf_file:
 
             st.download_button(
-                label="Download PDF Report",
-                data=file,
+                label="Download PDF",
+                data=pdf_file,
                 file_name=os.path.basename(
                     pdf_path
                 ),
                 mime="application/pdf"
             )
+
+        st.success(
+            f"PDF Available: "
+            f"{os.path.basename(pdf_path)}"
+        )
 
 
 if __name__ == "__main__":
