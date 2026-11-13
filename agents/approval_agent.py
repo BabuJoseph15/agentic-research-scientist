@@ -1,23 +1,14 @@
 """
 Approval Agent.
 
-Responsible for collecting human feedback on the
-generated scientific hypothesis before allowing
-the workflow to proceed to report generation.
+Responsible for collecting human feedback
+for generated scientific hypotheses.
 
-This agent represents the first Human-in-the-Loop
-(HITL) checkpoint in the Agentic Research Scientist
-workflow.
+Supports:
 
-Workflow:
-
-    Hypothesis
-         ↓
-    Human Review
-         ↓
-    Approve / Reject
-         ↓
-    Report Generation
+1. Console Approval
+2. Streamlit Approval
+3. Future LangGraph Interrupts
 
 Author:
     Babu Guduru
@@ -26,57 +17,118 @@ Project:
     Agentic Research Scientist
 
 Version:
-    0.2
+    1.0
 """
+
+from utils.logger import logger
 
 
 def approval_agent(state):
     """
-    Request human approval for the generated hypothesis.
+    Request human approval.
 
-    Displays the generated hypothesis and waits
-    for reviewer input.
+    If approval already exists in the
+    workflow state, use that value.
 
-    Accepted Inputs:
-        - yes
-        - no
+    Otherwise prompt the user through
+    the console.
 
     Args:
         state (dict):
-            Current LangGraph workflow state.
+            Current workflow state.
 
     Returns:
         dict:
-            Updated state containing approval decision.
+            Updated workflow state.
     """
 
+    logger.info(
+        "Approval Agent Started"
+    )
+
+    #
+    # Streamlit/UI Mode
+    #
+    existing_approval = (
+        state.get(
+            "approval",
+            ""
+        )
+        .strip()
+        .lower()
+    )
+
+    if existing_approval in [
+        "yes",
+        "no"
+    ]:
+
+        logger.info(
+            f"Using supplied decision: "
+            f"{existing_approval}"
+        )
+
+        return state
+
+    #
+    # Console Mode
+    #
     print("\n")
     print("=" * 100)
     print("HUMAN REVIEW REQUIRED")
     print("=" * 100)
 
-    print("\nGenerated Hypothesis:\n")
-    print(state["hypothesis"])
+    print(
+        "\nGenerated Hypothesis:\n"
+    )
+
+    print(
+        state.get(
+            "hypothesis",
+            ""
+        )
+    )
 
     while True:
 
         approval = input(
-            "\nApprove hypothesis? (yes/no): "
+            "\nApprove hypothesis? "
+            "(yes/no): "
         ).strip().lower()
 
-        if approval in ["yes", "no"]:
+        if approval in [
+            "yes",
+            "no"
+        ]:
 
-            state["approval"] = approval
+            state["approval"] = (
+                approval
+            )
 
             print("\n")
             print("=" * 100)
-            print("REVIEW DECISION RECORDED")
+            print(
+                "REVIEW DECISION RECORDED"
+            )
             print("=" * 100)
-            print(f"Decision : {approval.upper()}")
+
+            print(
+                f"Decision : "
+                f"{approval.upper()}"
+            )
+
+            logger.info(
+                f"Approval decision: "
+                f"{approval}"
+            )
 
             return state
 
         print(
             "\nInvalid input."
-            "\nPlease enter either 'yes' or 'no'."
+        )
+
+        print(
+            "Please enter "
+            "'yes' or 'no'."
         )

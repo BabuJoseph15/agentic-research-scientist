@@ -1,6 +1,9 @@
 """
 Streamlit User Interface.
 
+Provides a web-based interface for interacting
+with the Agentic Research Scientist workflow.
+
 Author:
     Babu Guduru
 
@@ -11,16 +14,43 @@ Version:
     1.0
 """
 
+import sys
 import os
+
+from pathlib import Path
 
 import streamlit as st
 
+
+# --------------------------------------------------
+# Project Root
+# --------------------------------------------------
+
+PROJECT_ROOT = Path(__file__).parent.parent
+
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.append(str(PROJECT_ROOT))
+
+
+# --------------------------------------------------
+# Imports
+# --------------------------------------------------
+
 from graph.workflow import graph
 
-from agents.report_agent import report_agent
+from agents.report_agent import (
+    report_agent
+)
 
+
+# --------------------------------------------------
+# Helpers
+# --------------------------------------------------
 
 def initialize_state():
+    """
+    Create initial workflow state.
+    """
 
     return {
         "question": "",
@@ -35,6 +65,17 @@ def initialize_state():
 
 
 def run_workflow(question: str):
+    """
+    Execute workflow.
+
+    Args:
+        question (str):
+            Research question.
+
+    Returns:
+        dict:
+            Workflow result.
+    """
 
     state = initialize_state()
 
@@ -42,6 +83,10 @@ def run_workflow(question: str):
 
     return graph.invoke(state)
 
+
+# --------------------------------------------------
+# Main UI
+# --------------------------------------------------
 
 def main():
 
@@ -57,18 +102,22 @@ def main():
 
     st.markdown(
         """
-Research workflow powered by:
+Generate research insights using:
 
 - ArXiv Research Retrieval
 - Statistical Analysis
-- GPT-4o Reasoning
-- Human Approval
+- GPT-4o Scientific Reasoning
+- Human Review
 - PDF Report Generation
 """
     )
 
+    # --------------------------------------------------
+    # Research Question
+    # --------------------------------------------------
+
     question = st.text_area(
-        "Research Question",
+        label="Research Question",
         value=(
             "Can climate change increase "
             "dengue outbreaks in India?"
@@ -76,13 +125,16 @@ Research workflow powered by:
         height=120
     )
 
+    # --------------------------------------------------
+    # Run Workflow
+    # --------------------------------------------------
+
     if st.button(
-        "🚀 Run Research Workflow"
+        "🚀 Generate Research Analysis"
     ):
 
         with st.spinner(
-
-            "Generating scientific analysis..."
+            "Running Agentic Workflow..."
         ):
 
             result = run_workflow(
@@ -93,8 +145,18 @@ Research workflow powered by:
             "workflow_result"
         ] = result
 
-    if "workflow_result" not in st.session_state:
+        st.success(
+            "Research analysis completed."
+        )
 
+    # --------------------------------------------------
+    # Wait Until Data Exists
+    # --------------------------------------------------
+
+    if (
+        "workflow_result"
+        not in st.session_state
+    ):
         return
 
     result = st.session_state[
@@ -102,7 +164,7 @@ Research workflow powered by:
     ]
 
     # --------------------------------------------------
-    # Research Papers
+    # Papers
     # --------------------------------------------------
 
     st.header(
@@ -116,26 +178,22 @@ Research workflow powered by:
         ):
 
             st.write(
-                f"Published: "
+                f"**Published:** "
                 f"{paper['published']}"
             )
 
             st.write(
-                "Authors:"
+                f"**Authors:** "
+                f"{', '.join(paper['authors'])}"
             )
 
-            for author in paper["authors"]:
-
-                st.write(
-                    f"- {author}"
-                )
-
             st.write(
-                f"URL: {paper['url']}"
+                f"**URL:** "
+                f"{paper['url']}"
             )
 
     # --------------------------------------------------
-    # Statistics
+    # Analysis
     # --------------------------------------------------
 
     st.header(
@@ -151,24 +209,24 @@ Research workflow powered by:
     # --------------------------------------------------
 
     st.header(
-        "🧠 GPT Scientific Assessment"
+        "🧠 GPT Scientific Analysis"
     )
 
     st.text_area(
-        "",
-        result["hypothesis"],
+        label="Generated Hypothesis",
+        value=result["hypothesis"],
         height=450
     )
 
     # --------------------------------------------------
-    # Approval
+    # Human Approval
     # --------------------------------------------------
 
     st.header(
         "✅ Human Review"
     )
 
-    review = st.radio(
+    decision = st.radio(
         "Review Decision",
         [
             "Approve",
@@ -182,7 +240,7 @@ Research workflow powered by:
 
         result["approval"] = (
             "yes"
-            if review == "Approve"
+            if decision == "Approve"
             else "no"
         )
 
@@ -195,21 +253,21 @@ Research workflow powered by:
         ] = result
 
         st.success(
-            f"Research {review.lower()}ed."
+            f"Hypothesis {decision.lower()}d."
         )
 
     # --------------------------------------------------
-    # Final Report
+    # Report
     # --------------------------------------------------
 
     if result.get("report"):
 
         st.header(
-            "📄 Final Report"
+            "📄 Research Report"
         )
 
         st.text_area(
-            "",
+            label="Final Report",
             value=result["report"],
             height=500
         )
@@ -222,8 +280,9 @@ Research workflow powered by:
         "pdf_path"
     )
 
-    if pdf_path and os.path.exists(
+    if (
         pdf_path
+        and os.path.exists(pdf_path)
     ):
 
         st.header(
@@ -233,11 +292,11 @@ Research workflow powered by:
         with open(
             pdf_path,
             "rb"
-        ) as pdf_file:
+        ) as file:
 
             st.download_button(
                 label="Download PDF Report",
-                data=pdf_file,
+                data=file,
                 file_name=os.path.basename(
                     pdf_path
                 ),
@@ -246,5 +305,4 @@ Research workflow powered by:
 
 
 if __name__ == "__main__":
-
     main()
