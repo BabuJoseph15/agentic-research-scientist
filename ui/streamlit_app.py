@@ -11,7 +11,7 @@ Project:
     Agentic Research Scientist
 
 Version:
-    1.0
+    1.1
 """
 
 import os
@@ -33,7 +33,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 
 # --------------------------------------------------
-# Imports
+# Application Imports
 # --------------------------------------------------
 
 from graph.ui_workflow import (
@@ -46,7 +46,7 @@ from agents.report_agent import (
 
 
 # --------------------------------------------------
-# Session State Initialization
+# Workflow Helpers
 # --------------------------------------------------
 
 def initialize_state():
@@ -66,17 +66,13 @@ def initialize_state():
     }
 
 
-# --------------------------------------------------
-# Workflow Execution
-# --------------------------------------------------
-
 def run_workflow(question: str):
     """
-    Execute UI workflow.
+    Execute Streamlit workflow.
 
     Args:
         question (str):
-            Research question.
+            User research question.
 
     Returns:
         dict:
@@ -118,8 +114,10 @@ Generate research insights using:
 """
     )
 
+    st.divider()
+
     # --------------------------------------------------
-    # Question Input
+    # Research Question
     # --------------------------------------------------
 
     question = st.text_area(
@@ -131,32 +129,29 @@ Generate research insights using:
         height=120
     )
 
-    # --------------------------------------------------
-    # Run Analysis
-    # --------------------------------------------------
-
     if st.button(
-        "🚀 Generate Research Analysis"
+        "🚀 Generate Research Analysis",
+        type="primary"
     ):
 
         with st.spinner(
-            "Running Agentic Research Workflow..."
+            "Running research workflow..."
         ):
 
             result = run_workflow(
                 question
             )
 
-        st.session_state[
-            "workflow_result"
-        ] = result
+            st.session_state[
+                "workflow_result"
+            ] = result
 
         st.success(
             "Research analysis completed."
         )
 
     # --------------------------------------------------
-    # Wait Until Workflow Completes
+    # Stop Until Analysis Exists
     # --------------------------------------------------
 
     if (
@@ -175,6 +170,10 @@ Generate research insights using:
 
     st.header(
         "📚 Research Papers"
+    )
+
+    st.caption(
+        f"{len(result.get('papers', []))} papers retrieved"
     )
 
     for paper in result.get(
@@ -215,7 +214,7 @@ Generate research insights using:
             )
 
     # --------------------------------------------------
-    # Statistical Analysis
+    # Statistical Findings
     # --------------------------------------------------
 
     st.header(
@@ -237,17 +236,17 @@ Generate research insights using:
         "🧠 GPT-4o Scientific Analysis"
     )
 
-    st.text_area(
-        label="Generated Hypothesis",
-        value=result.get(
+    st.markdown(
+        result.get(
             "hypothesis",
-            ""
-        ),
-        height=500
+            "No hypothesis generated."
+        )
     )
 
+    st.divider()
+
     # --------------------------------------------------
-    # Human Review
+    # Review Section
     # --------------------------------------------------
 
     st.header(
@@ -263,10 +262,6 @@ Generate research insights using:
         horizontal=True
     )
 
-    # --------------------------------------------------
-    # Generate Report
-    # --------------------------------------------------
-
     if st.button(
         "📄 Generate Final Report"
     ):
@@ -277,8 +272,8 @@ Generate research insights using:
             else "no"
         )
 
-        updated_result = (
-            report_agent(result)
+        updated_result = report_agent(
+            result
         )
 
         st.session_state[
@@ -287,20 +282,28 @@ Generate research insights using:
 
         st.success(
             f"Hypothesis "
-            f"{approval.lower()}ed."
+            f"{approval.lower()}d."
         )
 
+        st.rerun()
+
     # --------------------------------------------------
-    # Display Report
+    # Refresh Result
     # --------------------------------------------------
 
     result = st.session_state[
         "workflow_result"
     ]
 
+    # --------------------------------------------------
+    # Final Report
+    # --------------------------------------------------
+
     if result.get(
         "report"
     ):
+
+        st.divider()
 
         st.header(
             "📑 Final Research Report"
@@ -326,6 +329,8 @@ Generate research insights using:
         and os.path.exists(pdf_path)
     ):
 
+        st.divider()
+
         st.header(
             "📥 Download PDF Report"
         )
@@ -337,7 +342,7 @@ Generate research insights using:
 
             st.download_button(
                 label="Download PDF",
-                data=pdf_file,
+                data=pdf_file.read(),
                 file_name=os.path.basename(
                     pdf_path
                 ),
@@ -345,7 +350,7 @@ Generate research insights using:
             )
 
         st.success(
-            f"PDF Available: "
+            f"PDF Ready: "
             f"{os.path.basename(pdf_path)}"
         )
 
