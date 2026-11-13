@@ -1,0 +1,160 @@
+[
+    {
+        "title": "Precipitation extremes under climate change",
+        "authors": [
+            "Paul A. O'Gorman"
+        ],
+        "published": "2015-03-25",
+        "summary": "The response of precipitation extremes to climate change is considered using results from theory, modeling, and observations, with a focus on the physical factors that control the response. Observations and simulations with climate models show that precipitation extremes intensify in response to a warming climate. However, the sensitivity of precipitation extremes to warming remains uncertain when convection is important, and it may be higher in the tropics than the extratropics. Several physical contributions govern the response of precipitation extremes. The thermodynamic contribution is robust and well understood, but theoretical understanding of the microphysical and dynamical contributions is still being developed. Orographic precipitation extremes and snowfall extremes respond differently from other precipitation extremes and require particular attention. Outstanding research challenges include the influence of mesoscale convective organization, the dependence on the duration considered, and the need to better constrain the sensitivity of tropical precipitation extremes to warming.",
+        "link": "http://arxiv.org/abs/1503.07557v1"
+    },
+    {
+        "title": "Future Climate Change Projections over the Indian Region",
+        "authors": [
+            "J. Sanjay",
+            "R. Krishnan",
+            "M. V. S. Ramarao",
+            "R. Mahesh",
+            "Bhupendra Bahadur Singh",
+            "Jayashri Patel",
+            "Sandip Ingle",
+            "Preethi Bhaskar",
+            "J. V. Revadekar",
+            "T. P. Sabin",
+            "M. Mujumdar"
+        ],
+        "published": "2020-12-02",
+        "summary": "Assessments of impacts of climate change and future projections over the Indian region, have so far relied on a single regional climate model (RCM) - eg., the PRECIS RCM of the Hadley Centre, UK. While these assessments have provided inputs to various reports (e.g., INCCA 2010; NATCOMM2 2012), it is important to have an ensemble of climate projections drawn from multiple RCMs due to large uncertainties in regional-scale climate projections. Ensembles of multi-RCM projections driven under different perceivable socio-economic scenarios are required to capture the probable path of growth, and provide the behavior of future climate and impacts on various biophysical systems and economic sectors dependent on such systems.\n  The Centre for Climate Change Research, Indian Institute of Tropical Meteorology (CCCR-IITM) has generated an ensemble of high resolution downscaled projections of regional climate and monsoon over South Asia until 2100 for the Intergovernmental Panel for Climate Change (IPCC)using a RCM (ICTP-RegCM4) at 50 km horizontal resolution, by driving the regional model with lateral and lower boundary conditions from multiple global atmosphere-ocean coupled models from the Coupled Model Intercomparison Project Phase 5 (CMIP5). The future projections are based on three Representation Concentration Pathway (RCP) scenarios (viz., RCP2.6, RCP4.5, RCP8.5) of the IPCC.",
+        "link": "http://arxiv.org/abs/2012.10386v1"
+    },
+    {
+        "title": "Invasive species, extreme fire risk, and toxin release under a changing climate",
+        "authors": [
+            "Kimberley Miner",
+            "Laura Meyerson",
+            ". Climate Change Institute",
+            "School of Earth",
+            "Climate Sciences",
+            "University of Maine",
+            " Orono",
+            "ME 04469 2. Department of Natural Resources Science",
+            "University of Rhode Island",
+            " Kingston",
+            "RI 02881"
+        ],
+        "published": "2020-08-03",
+        "summary": "Mediterranean ecosystems such as those found in California, Central Chile, Southern Europe, and Southwest Australia host numerous, diverse, fire-adapted micro-ecosystems. These micro-ecosystems are as diverse as mountainous conifer to desert-like chaparral communities. Over the last few centuries, human intervention, invasive species, and climate warming have drastically affected the composition and health of Mediterranean ecosystems on almost every continent. Increased fuel load from fire suppression policies and the continued range expansion of non-native insects and plants, some driven by long-term drought, produced the deadliest wildfire season on record in 2018. As a consequence of these fires, a large number of structures are destroyed, releasing household chemicals into the environment as uncontrolled toxins. The mobilization of these materials can lead to health risks and disruption in both human and natural systems. This article identifies drivers that led to a structural weakening of the mosaic of fire-adapted ecosystems in California, and subsequently increased the risk of destructive and explosive wildfires throughout the state. Under a new climate regime, managing the impacts on systems moving out-of-phase with natural processes may protect lives and ensure the stability of ecosystem services.",
+        "link": "http://arxiv.org/abs/2008.01035v1"
+    },
+    {
+        "title": "A multi-criterion simulation model to determine dengue outbreaks",
+        "authors": [
+            "Piotr Jakubowski",
+            "Hasitha Erandi",
+            "Anuradha Mahasinghe",
+            "Sanjeewa Perera",
+            "Andrzej Ameljańczyk"
+        ],
+        "published": "2022-09-07",
+        "summary": "In this study, we develop a multi criteria model to identify dengue outbreak periods. To validate the model, we performed a simulation using dengue transmission-related data in Sri Lanka's Western Province. Our results indicated that the developed model can be used to predict a dengue outbreak situation in a given region up to one month in advance.",
+        "link": "http://arxiv.org/abs/2209.03287v1"
+    },
+    {
+        "title": "Climate Adaptation with Reinforcement Learning: Experiments with Flooding and Transportation in Copenhagen",
+        "authors": [
+            "Miguel Costa",
+            "Morten W. Petersen",
+            "Arthur Vandervoort",
+            "Martin Drews",
+            "Karyn Morrissey",
+            "Francisco C. Pereira"
+        ],
+        "published": "2024-09-27",
+        "summary": "Due to climate change the frequency and intensity of extreme rainfall events, which contribute to urban flooding, are expected to increase in many places. These floods can damage transport infrastructure and disrupt mobility, highlighting the need for cities to adapt to escalating risks. Reinforcement learning (RL) serves as a powerful tool for uncovering optimal adaptation strategies, determining how and where to deploy adaptation measures effectively, even under significant uncertainty. In this study, we leverage RL to identify the most effective timing and locations for implementing measures, aiming to reduce both direct and indirect impacts of flooding. Our framework integrates climate change projections of future rainfall events and floods, models city-wide motorized trips, and quantifies direct and indirect impacts on infrastructure and mobility. Preliminary results suggest that our RL-based approach can significantly enhance decision-making by prioritizing interventions in specific urban areas and identifying the optimal periods for their implementation. Our framework is publicly available: \\url{https://github.com/MLSM-at-DTU/floods_transport_rl}.",
+        "link": "http://arxiv.org/abs/2409.18574v2"
+    },
+    {
+        "title": "The 2023 Dengue Outbreak in Lombardy, Italy: A One-Health Perspective",
+        "authors": [
+            "Francesca Rovida",
+            "Marino Faccini",
+            "Carla Molina Grané",
+            "Irene Cassaniti",
+            "Sabrina Senatore",
+            "Eva Rossetti",
+            "Giuditta Scardina",
+            "Manuela Piazza",
+            "Giulia Campanini",
+            "Daniele Lilleri",
+            "Stefania Paolucci",
+            "Guglielmo Ferrari",
+            "Antonio Piralla",
+            "Francesco Defilippo",
+            "Davide Lelli",
+            "Ana Moreno",
+            "Luigi Vezzosi",
+            "Federica Attanasi",
+            "Soresini Marzia",
+            "Barozzi Manuela",
+            "Lorenzo Cerutti",
+            "Stefano Paglia",
+            "Angelo Regazzetti",
+            "Maurilia Marcacci",
+            "Guido Di Donato",
+            "Marco Farioli",
+            "Mattia Manica",
+            "Piero Poletti",
+            "Antonio Lavazza",
+            "Maira Bonini",
+            "Stefano Merler",
+            "Fausto Baldanti",
+            "Danilo Cereda",
+            "Lombardy Dengue network"
+        ],
+        "published": "2024-08-08",
+        "summary": "Introduction. Here we reported the virological, entomological and epidemiological characteristics of the large autochthonous outbreak of dengue (DENV) occurred in a small village of the Lombardy region (Northern Italy) during summer 2023.\n  Methods. After the diagnosis of the first autochthonous case on 18 August 2023, public health measures, including epidemiological investigation and vector control measures, were carried out. A serological screening for DENV antibodies detection was offered to the population. In the case of positive DENV IgM, a second sample was collected to detect DENV RNA and verify seroconversion. Entomological and epidemiological investigations were also performed. A modeling analysis was conducted to estimate the dengue generation time, transmission potential, distance of transmission, and assess diagnostic delays.\n  Results. Overall, 416 subjects participated to the screening program and 20 were identified as DENV-1 cases (15 confirmed and 5 probable). In addition, DENV-1 infection was diagnosed in 24 symptomatic subjects referred to the local Emergency Room Department for suggestive symptoms and 1 case was identified through blood donation screening. The average generation time was estimated to be 18.3 days (95% CI: 13.1-23.5 days). R0 was estimated at 1.31 (95% CI: 0.76-1.98); 90% of transmission occurred within 500m. Entomological investigations performed in 46 pools of mosquitoes revealed the presence of only one positive pool for DENV-1.\n  Discussion. This report highlights the importance of synergic surveillance, including virological, entomological and public health measures to control the spread of arboviral infections.",
+        "link": "http://arxiv.org/abs/2408.04768v1"
+    },
+    {
+        "title": "Data-Driven Forecast of Dengue Outbreaks in Brazil: A Critical Assessment of Climate Conditions for Different Capitals",
+        "authors": [
+            "Lucas Stolerman",
+            "Pedro Maia",
+            "J. Nathan Kutz"
+        ],
+        "published": "2016-12-31",
+        "summary": "Local climate conditions play a major role in the development of the mosquito population responsible for transmitting Dengue Fever. Since the {\\em Aedes Aegypti} mosquito is also a primary vector for the recent Zika and Chikungunya epidemics across the Americas, a detailed monitoring of periods with favorable climate conditions for mosquito profusion may improve the timing of vector-control efforts and other urgent public health strategies. We apply dimensionality reduction techniques and machine-learning algorithms to climate time series data and analyze their connection to the occurrence of Dengue outbreaks for seven major cities in Brazil. Specifically, we have identified two key variables and a period during the annual cycle that are highly predictive of epidemic outbreaks. The key variables are the frequency of precipitation and temperature during an approximately two month window of the winter season preceding the outbreak. Thus simple climate signatures may be influencing Dengue outbreaks even months before their occurrence. Some of the more challenging datasets required usage of compressive-sensing procedures to estimate missing entries for temperature and precipitation records. Our results indicate that each Brazilian capital considered has a unique frequency of precipitation and temperature signature in the winter preceding a Dengue outbreak. Such climate contributions on vector populations are key factors in dengue dynamics which could lead to more accurate prediction models and early warning systems. Finally, we show that critical temperature and precipitation signatures may vary significantly from city to city, suggesting that the interplay between climate variables and dengue outbreaks is more complex than generally appreciated.",
+        "link": "http://arxiv.org/abs/1701.00166v1"
+    },
+    {
+        "title": "Impact of anthropogenic climate change on the East Asian summer monsoon",
+        "authors": [
+            "Claire Burke",
+            "Peter Stott"
+        ],
+        "published": "2017-04-03",
+        "summary": "The East Asian summer monsoon (EASM) is important for bringing rainfall to large areas of China. Historically, variations in the EASM have had major impacts including flooding and drought. We present an analysis of the impact of anthropogenic climate change on EASM rainfall in Eastern China using a newly updated attribution system. Our results suggest that anthropogenic climate change has led to an overall decrease in total monsoon rainfall over the past 65 years, and an increased number of dry days. However the model also predicts that anthropogenic forcings have caused the most extreme heavy rainfall events to become shorter in duration and more intense. With the potential for future changes in aerosol and greenhouse gas emissions, historical trends in monsoon rainfall may not be indicative of future changes, although extreme rainfall is projected to increase over East Asia with continued warming in the region.",
+        "link": "http://arxiv.org/abs/1704.00563v1"
+    },
+    {
+        "title": "Sri Lanka Dengue Dashboard: A Web-Based Decision Support Tool for Dengue Surveillance in Sri Lanka",
+        "authors": [
+            "Y. M. Amali P. Rajapaksha"
+        ],
+        "published": "2026-08-07",
+        "summary": "These days, Sri Lanka is facing a severe dengue outbreak. In this situation, it is very useful to provide an overall understanding of Sri Lanka's historical dengue trends as well as the current dengue situation. A dashboard is an easy and effective way to convey a large amount of information to the public. Therefore, the Sri Lanka Dengue Dashboard is an initial attempt to provide comprehensive information about the dengue situation in Sri Lanka, together with the relationship between climate factors and dengue cases.\n  Keywords: Data visualization, Heat map, Climate-dengue relationship, Tree map, Time series analysis, Quarto, Dashboard, Dengue fever",
+        "link": "http://arxiv.org/abs/2608.07650v1"
+    },
+    {
+        "title": "ClimaText: A Dataset for Climate Change Topic Detection",
+        "authors": [
+            "Francesco S. Varini",
+            "Jordan Boyd-Graber",
+            "Massimiliano Ciaramita",
+            "Markus Leippold"
+        ],
+        "published": "2020-12-01",
+        "summary": "Climate change communication in the mass media and other textual sources may affect and shape public perception. Extracting climate change information from these sources is an important task, e.g., for filtering content and e-discovery, sentiment analysis, automatic summarization, question-answering, and fact-checking. However, automating this process is a challenge, as climate change is a complex, fast-moving, and often ambiguous topic with scarce resources for popular text-based AI tasks. In this paper, we introduce \\textsc{ClimaText}, a dataset for sentence-based climate change topic detection, which we make publicly available. We explore different approaches to identify the climate change topic in various text sources. We find that popular keyword-based models are not adequate for such a complex and evolving task. Context-based algorithms like BERT \\cite{devlin2018bert} can detect, in addition to many trivial cases, a variety of complex and implicit topic patterns. Nevertheless, our analysis reveals a great potential for improvement in several directions, such as, e.g., capturing the discussion on indirect effects of climate change. Hence, we hope this work can serve as a good starting point for further research on this topic.",
+        "link": "http://arxiv.org/abs/2012.00483v2"
+    }
+]
