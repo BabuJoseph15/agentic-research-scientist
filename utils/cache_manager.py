@@ -15,7 +15,7 @@ Project:
     Agentic Research Scientist
 
 Version:
-    0.7
+    0.8
 """
 
 import json
@@ -28,12 +28,16 @@ from utils.logger import logger
 
 
 # ----------------------------------------------------------
-# File Locations
+# Paths
 # ----------------------------------------------------------
 
 PROJECT_ROOT = Path(__file__).parent.parent
 
-CACHE_DIR = PROJECT_ROOT / "data" / "cache"
+CACHE_DIR = (
+    PROJECT_ROOT
+    / "data"
+    / "cache"
+)
 
 HISTORY_DIR = (
     PROJECT_ROOT
@@ -51,7 +55,6 @@ HISTORY_FILE = (
     / "research_history.json"
 )
 
-# Ensure directories exist
 CACHE_DIR.mkdir(
     parents=True,
     exist_ok=True
@@ -64,7 +67,7 @@ HISTORY_DIR.mkdir(
 
 
 # ----------------------------------------------------------
-# Research Paper Cache
+# Paper Cache
 # ----------------------------------------------------------
 
 def save_papers_to_cache(
@@ -72,13 +75,6 @@ def save_papers_to_cache(
 ) -> None:
     """
     Save research papers to cache.
-
-    Args:
-        papers (list):
-            List of research papers.
-
-    Returns:
-        None
     """
 
     try:
@@ -111,29 +107,18 @@ def save_papers_to_cache(
     except Exception as ex:
 
         logger.error(
-            f"Failed saving cache: {str(ex)}"
+            f"Cache save failed: {ex}"
         )
 
 
 def load_papers_from_cache() -> list:
     """
-    Load research papers from cache.
-
-    Returns:
-        list:
-            Cached papers.
-
-            Empty list if cache unavailable.
+    Load cached research papers.
     """
 
     try:
 
         if not CACHE_FILE.exists():
-
-            logger.warning(
-                "Research cache file not found."
-            )
-
             return []
 
         with open(
@@ -145,7 +130,7 @@ def load_papers_from_cache() -> list:
             cache_data = json.load(file)
 
         logger.info(
-            "Research papers loaded from cache."
+            "Loaded papers from cache."
         )
 
         return cache_data.get(
@@ -156,7 +141,7 @@ def load_papers_from_cache() -> list:
     except Exception as ex:
 
         logger.error(
-            f"Failed loading cache: {str(ex)}"
+            f"Cache load failed: {ex}"
         )
 
         return []
@@ -172,25 +157,13 @@ def save_report_history(
     approval: str
 ) -> None:
     """
-    Save workflow execution history.
-
-    Args:
-        question (str):
-            Research question.
-
-        hypothesis (str):
-            Generated hypothesis.
-
-        approval (str):
-            Approval decision.
-
-    Returns:
-        None
+    Save completed workflow
+    execution history.
     """
 
     try:
 
-        history_entry = {
+        entry = {
             "timestamp":
             datetime.now().isoformat(),
 
@@ -204,9 +177,6 @@ def save_report_history(
             hypothesis
         }
 
-        #
-        # Load existing history
-        #
         if HISTORY_FILE.exists():
 
             with open(
@@ -223,33 +193,15 @@ def save_report_history(
                 "reports": []
             }
 
-        #
-        # Repair corrupted structure
-        #
-        if not isinstance(
-            history_data,
-            dict
-        ):
-            history_data = {
-                "reports": []
-            }
-
         if "reports" not in history_data:
-
             history_data["reports"] = []
 
-        #
-        # Add new entry
-        #
         history_data[
             "reports"
         ].append(
-            history_entry
+            entry
         )
 
-        #
-        # Save updated history
-        #
         with open(
             HISTORY_FILE,
             "w",
@@ -270,27 +222,18 @@ def save_report_history(
     except Exception as ex:
 
         logger.error(
-            f"Failed updating history: "
-            f"{str(ex)}"
+            f"History update failed: {ex}"
         )
 
 
 def load_report_history() -> list:
     """
-    Load workflow history.
-
-    Returns:
-        list:
-            Historical workflow executions.
+    Load research history.
     """
 
     try:
 
         if not HISTORY_FILE.exists():
-
-            logger.warning(
-                "Research history file not found."
-            )
 
             return []
 
@@ -310,96 +253,7 @@ def load_report_history() -> list:
     except Exception as ex:
 
         logger.error(
-            f"Failed loading history: "
-            f"{str(ex)}"
+            f"History load failed: {ex}"
         )
 
         return []
-
-
-# ----------------------------------------------------------
-# Utility Functions
-# ----------------------------------------------------------
-
-def clear_paper_cache() -> None:
-    """
-    Delete cached research papers.
-
-    Returns:
-        None
-    """
-
-    try:
-
-        if CACHE_FILE.exists():
-
-            CACHE_FILE.unlink()
-
-            logger.info(
-                "Research cache cleared."
-            )
-
-    except Exception as ex:
-
-        logger.error(
-            f"Failed clearing cache: "
-            f"{str(ex)}"
-        )
-
-
-def get_cache_metadata() -> dict:
-    """
-    Retrieve cache metadata.
-
-    Returns:
-        dict:
-            Cache metadata.
-    """
-
-    try:
-
-        if not CACHE_FILE.exists():
-
-            return {}
-
-        with open(
-            CACHE_FILE,
-            "r",
-            encoding="utf-8"
-        ) as file:
-
-            cache_data = json.load(file)
-
-        return {
-            "last_updated":
-            cache_data.get(
-                "last_updated"
-            ),
-
-            "source":
-            cache_data.get(
-                "source"
-            ),
-
-            "status":
-            cache_data.get(
-                "status"
-            ),
-
-            "paper_count":
-            len(
-                cache_data.get(
-                    "papers",
-                    []
-                )
-            )
-        }
-
-    except Exception as ex:
-
-        logger.error(
-            f"Failed reading cache metadata: "
-            f"{str(ex)}"
-        )
-
-        return {}
