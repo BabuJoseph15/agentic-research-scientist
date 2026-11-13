@@ -20,3 +20,6 @@ dist/
 build/
 *.egg-info/git init
 .env
+reports/*.pdf
+cache/
+__pycache__/
