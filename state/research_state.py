@@ -1,11 +1,21 @@
 """
 Research State Definition.
 
-Shared state object used throughout
-the LangGraph workflow.
+Defines the shared workflow state used by
+all LangGraph agents.
+
+The state acts as the central memory
+container that is passed between workflow
+nodes.
 
 Author:
     Babu Guduru
+
+Project:
+    Agentic Research Scientist
+
+Version:
+    0.7
 """
 
 from typing import TypedDict
@@ -16,29 +26,47 @@ class ResearchState(TypedDict):
     Shared workflow state.
 
     Attributes:
-        question:
+        question (str):
             Research question.
 
-        papers:
-            Retrieved research papers.
+        papers (list):
+            Research papers retrieved
+            from ArXiv.
 
-        evidence:
-            Extracted evidence.
+        evidence (list):
+            Extracted evidence from
+            research papers.
 
-        analysis:
-            Statistical findings.
+        analysis (dict):
+            Statistical findings
+            from the dataset.
 
-        hypothesis:
-            Generated scientific hypothesis.
+        hypothesis (str):
+            GPT-generated scientific
+            hypothesis.
 
-        approval:
+        approval (str):
             Human approval decision.
+
+        report (str):
+            Final approved report.
+
+        pdf_path (str):
+            Generated PDF file path.
     """
 
     question: str
+
     papers: list
+
     evidence: list
+
     analysis: dict
+
     hypothesis: str
+
     approval: str
+
     report: str
+
+    pdf_path: str

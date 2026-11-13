@@ -1,8 +1,15 @@
 """
 ArXiv Research Tool.
 
-Retrieves research papers from arXiv
+Retrieves research papers from ArXiv
 based on a research query.
+
+Features:
+
+1. Live ArXiv retrieval
+2. Local cache storage
+3. Cache recovery during API failures
+4. Evidence extraction utilities
 
 Author:
     Babu Guduru
@@ -11,15 +18,18 @@ Project:
     Agentic Research Scientist
 
 Version:
-    1.0
+    1.1
 """
 
 from typing import List, Dict
 
 import arxiv
 
+from utils.logger import logger
+
 from utils.cache_manager import (
-    append_research_papers
+    save_papers_to_cache,
+    load_papers_from_cache
 )
 
 
@@ -31,15 +41,14 @@ def search_arxiv(
     max_results: int = MAX_RESULTS
 ) -> List[Dict]:
     """
-    Search research papers from arXiv.
+    Search research papers from ArXiv.
 
     Args:
         query (str):
             Research question or topic.
 
         max_results (int):
-            Maximum number of papers
-            to retrieve.
+            Maximum number of papers to retrieve.
 
     Returns:
         List[Dict]:
@@ -78,15 +87,19 @@ def search_arxiv(
                     else "Unknown"
                 ),
                 "summary": result.summary,
-                "link": result.entry_id
+                "url": str(result.entry_id)
             }
 
             papers.append(paper)
 
         if papers:
 
-            append_research_papers(
+            save_papers_to_cache(
                 papers
+            )
+
+            logger.info(
+                "Research papers cached successfully."
             )
 
             print(
@@ -96,20 +109,66 @@ def search_arxiv(
 
         else:
 
-            print(
-                "⚠️ No papers found."
+            logger.warning(
+                "No papers returned by ArXiv."
             )
 
         return papers
 
     except Exception as error:
 
-        print(
-            f"❌ ArXiv Search Failed: "
-            f"{error}"
+        logger.error(
+            f"ArXiv Search Failed: {error}"
         )
 
-        return []
+        print(
+            f"❌ ArXiv Search Failed: {error}"
+        )
+
+        cached_papers = (
+            load_papers_from_cache()
+        )
+
+        if cached_papers:
+
+            logger.info(
+                "Using cached papers."
+            )
+
+            print(
+                f"📦 Using "
+                f"{len(cached_papers)} "
+                f"cached papers."
+            )
+
+            return cached_papers
+
+        logger.warning(
+            "No cached papers available."
+        )
+
+        return [
+            {
+                "title":
+                "ArXiv API Unavailable",
+
+                "authors":
+                [],
+
+                "published":
+                "N/A",
+
+                "summary":
+                (
+                    "Research papers could not "
+                    "be retrieved and no cache "
+                    "is available."
+                ),
+
+                "url":
+                "N/A"
+            }
+        ]
 
 
 def format_paper_summary(
@@ -124,10 +183,11 @@ def format_paper_summary(
 
     Returns:
         str:
-            Formatted evidence summary.
+            Formatted paper summary.
     """
 
     if not papers:
+
         return "No papers available."
 
     summaries = []
@@ -140,6 +200,7 @@ def format_paper_summary(
         summaries.append(
             f"""
 Paper {index}
+
 Title:
 {paper['title']}
 
@@ -152,12 +213,14 @@ Authors:
 Summary:
 {paper['summary'][:500]}
 
-Link:
-{paper['link']}
+URL:
+{paper['url']}
 """
         )
 
-    return "\n".join(summaries)
+    return "\n".join(
+        summaries
+    )
 
 
 def extract_evidence(
@@ -166,26 +229,24 @@ def extract_evidence(
     """
     Extract evidence text from papers.
 
-    This function is used by
-    hypothesis and analysis agents
-    when constructing prompts.
-
     Args:
         papers (List[Dict]):
-            Retrieved papers.
+            Retrieved research papers.
 
     Returns:
         str:
-            Concatenated paper summaries.
+            Combined evidence text.
     """
 
     if not papers:
+
         return ""
 
     return "\n\n".join(
         [
             paper["summary"]
             for paper in papers
+            if paper.get("summary")
         ]
     )
 
@@ -217,11 +278,10 @@ if __name__ == "__main__":
         )
 
         print(
-            f"Link: "
-            f"{paper['link']}"
+            f"URL: "
+            f"{paper['url']}"
         )
 
         print(
-            "-"
-            * 80
+            "-" * 80
         )
