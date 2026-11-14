@@ -5,6 +5,12 @@ Displays previous workflow runs.
 
 Author:
     Babu Guduru
+
+Project:
+    Agentic Research Scientist
+
+Version:
+    1.1
 """
 
 import pandas as pd
@@ -18,24 +24,35 @@ from utils.cache_manager import (
 
 def render_history_dashboard():
     """
-    Render history page.
+    Render research history dashboard.
     """
 
-    history = (
-        load_report_history()
+    history = load_report_history()
+
+    st.header(
+        "📜 Research History"
     )
 
     if not history:
 
         st.info(
-            "No historical records found."
+            "No historical research records found."
         )
 
         return
 
-    st.header(
-        "📜 Research History"
+    # --------------------------------------------------
+    # Summary Metrics
+    # --------------------------------------------------
+
+    st.metric(
+        "Total Research Runs",
+        len(history)
     )
+
+    # --------------------------------------------------
+    # History Table
+    # --------------------------------------------------
 
     rows = []
 
@@ -45,18 +62,21 @@ def render_history_dashboard():
             {
                 "Timestamp":
                 item.get(
-                    "timestamp"
+                    "timestamp",
+                    "N/A"
                 ),
 
                 "Question":
                 item.get(
-                    "question"
+                    "question",
+                    "N/A"
                 ),
 
                 "Approval":
                 item.get(
-                    "approval"
-                )
+                    "approval",
+                    "N/A"
+                ).upper()
             }
         )
 
@@ -66,18 +86,40 @@ def render_history_dashboard():
 
     st.dataframe(
         df,
-        use_container_width=True
+        width="stretch"
     )
 
+    # --------------------------------------------------
+    # Latest Research Entry
+    # --------------------------------------------------
+
+    latest_entry = history[-1]
+
     st.subheader(
-        "Latest Hypothesis"
+        "🧠 Latest Stored Hypothesis"
     )
 
     st.text_area(
-        "",
-        value=history[-1].get(
+        label="Latest Stored Hypothesis",
+        value=latest_entry.get(
             "hypothesis",
             ""
         ),
-        height=250
+        height=300,
+        disabled=True
+    )
+
+    # --------------------------------------------------
+    # Latest Research Question
+    # --------------------------------------------------
+
+    st.subheader(
+        "❓ Latest Research Question"
+    )
+
+    st.info(
+        latest_entry.get(
+            "question",
+            "N/A"
+        )
     )
