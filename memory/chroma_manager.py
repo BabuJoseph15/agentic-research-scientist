@@ -1,7 +1,7 @@
 """
 ChromaDB Memory Manager.
 
-Stores and retrieves historical
+Stores and retrieves previous
 research executions.
 
 Author:
@@ -11,17 +11,21 @@ Project:
     Agentic Research Scientist
 
 Version:
-    1.1
+    1.2
 """
 
 import uuid
 
-import chromadb
-
 from pathlib import Path
+
+import chromadb
 
 from utils.logger import logger
 
+
+# --------------------------------------------------
+# Chroma Database
+# --------------------------------------------------
 
 CHROMA_PATH = (
     Path(__file__).parent
@@ -37,6 +41,10 @@ collection = client.get_or_create_collection(
 )
 
 
+# --------------------------------------------------
+# Save Memory
+# --------------------------------------------------
+
 def save_research_memory(
     question: str,
     hypothesis: str,
@@ -44,22 +52,39 @@ def save_research_memory(
     approval: str
 ):
     """
-    Save research result into memory.
+    Save research workflow output.
     """
 
     try:
+
+        document = f"""
+Question:
+{question}
+
+Hypothesis:
+{hypothesis}
+
+Approval:
+{approval}
+
+Report:
+{report}
+"""
 
         collection.add(
             ids=[
                 str(uuid.uuid4())
             ],
             documents=[
-                report
+                document
             ],
             metadatas=[
                 {
-                    "question": question,
-                    "approval": approval
+                    "question":
+                    question,
+
+                    "approval":
+                    approval
                 }
             ]
         )
@@ -71,39 +96,53 @@ def save_research_memory(
     except Exception as ex:
 
         logger.error(
-            f"Chroma save failed: {ex}"
+            f"Memory save failed: {ex}"
         )
 
+
+# --------------------------------------------------
+# Retrieve Similar Research
+# --------------------------------------------------
 
 def retrieve_similar_research(
     query: str,
     top_k: int = 3
 ):
     """
-    Retrieve similar research.
+    Retrieve prior similar research.
     """
 
     try:
 
-        result = collection.query(
+        results = collection.query(
             query_texts=[query],
             n_results=top_k
         )
 
-        return result
+        return results
 
     except Exception as ex:
 
         logger.error(
-            f"Chroma retrieval failed: {ex}"
+            f"Memory retrieval failed: {ex}"
         )
 
         return None
 
 
+# --------------------------------------------------
+# Collection Stats
+# --------------------------------------------------
+
 def memory_count():
     """
-    Number of stored memories.
+    Number of stored research runs.
     """
 
-    return collection.count()
+    try:
+
+        return collection.count()
+
+    except Exception:
+
+        return 0
