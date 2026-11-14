@@ -13,12 +13,13 @@ from pathlib import Path
 import streamlit as st
 
 
-REPORT_DIR = Path(
-    "reports"
-)
+REPORT_DIR = Path("reports")
 
 
 def render_pdf_library():
+    """
+    Render PDF report library.
+    """
 
     st.header(
         "📁 PDF Report Library"
@@ -28,27 +29,28 @@ def render_pdf_library():
         REPORT_DIR.glob(
             "report_*.pdf"
         ),
-        reverse=T*ue
+        reverse=True
     )
 
     if not pdf_files:
 
- *      st.info(
-            "No PDF*reports found."
+        st.info(
+            "No PDF reports found."
         )
 
-       *return
+        return
 
-    for pdf_file in pdf_fi*es:
+    for pdf_file in pdf_files:
 
         with open(
-          * pdf_file,
+            pdf_file,
             "rb"
-      * ) as file:
+        ) as file:
 
-            st.downlo*d_button(
-                label=f"*� {pdf_file.name}",
-              * data=file.read(),
-               *file_name=pdf_file.name,
-         *      mime="application/pdf"
-     *      )
+            st.download_button(
+                label=f"📄 {pdf_file.name}",
+                data=file.read(),
+                file_name=pdf_file.name,
+                mime="application/pdf",
+                key=f"pdf_{pdf_file.name}"
+            )
