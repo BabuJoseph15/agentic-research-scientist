@@ -1,14 +1,10 @@
 """
 Streamlit User Interface.
 
-Provides a web-based interface for interacting
-with the Agentic Research Scientist workflow.
+Agentic Research Scientist.
 
 Author:
     Babu Guduru
-
-Project:
-    Agentic Research Scientist
 
 Version:
     1.1
@@ -23,17 +19,19 @@ import streamlit as st
 
 
 # --------------------------------------------------
-# Project Root
+# Path Setup
 # --------------------------------------------------
 
 PROJECT_ROOT = Path(__file__).parent.parent
 
 if str(PROJECT_ROOT) not in sys.path:
-    sys.path.append(str(PROJECT_ROOT))
+    sys.path.append(
+        str(PROJECT_ROOT)
+    )
 
 
 # --------------------------------------------------
-# Application Imports
+# Workflow Imports
 # --------------------------------------------------
 
 from graph.ui_workflow import (
@@ -44,15 +42,20 @@ from agents.report_agent import (
     report_agent
 )
 
+from ui.components.history_dashboard import (
+    render_history_dashboard
+)
+
+from ui.components.pdf_library import (
+    render_pdf_library
+)
+
 
 # --------------------------------------------------
-# Workflow Helpers
+# Initial State
 # --------------------------------------------------
 
 def initialize_state():
-    """
-    Create initial workflow state.
-    """
 
     return {
         "question": "",
@@ -66,35 +69,35 @@ def initialize_state():
     }
 
 
-def run_workflow(question: str):
-    """
-    Execute Streamlit workflow.
+# --------------------------------------------------
+# Workflow Execution
+# --------------------------------------------------
 
-    Args:
-        question (str):
-            User research question.
-
-    Returns:
-        dict:
-            Workflow result.
-    """
+def run_workflow(
+    question: str
+):
 
     state = initialize_state()
 
     state["question"] = question
 
-    return ui_graph.invoke(state)
+    return ui_graph.invoke(
+        state
+    )
 
 
 # --------------------------------------------------
-# Main UI
+# Main Application
 # --------------------------------------------------
 
 def main():
 
     st.set_page_config(
-        page_title="Agentic Research Scientist",
+        page_title=
+        "Agentic Research Scientist",
+
         page_icon="🔬",
+
         layout="wide"
     )
 
@@ -106,11 +109,12 @@ def main():
         """
 Generate research insights using:
 
-- ArXiv Research Retrieval
+- ArXiv Retrieval
 - Statistical Analysis
 - GPT-4o Scientific Reasoning
 - Human Review
-- PDF Report Generation
+- PDF Reports
+- ChromaDB Memory
 """
     )
 
@@ -121,37 +125,44 @@ Generate research insights using:
     # --------------------------------------------------
 
     question = st.text_area(
-        label="Research Question",
+        "Research Question",
+
         value=(
             "Can climate change increase "
             "dengue outbreaks in India?"
         ),
+
         height=120
     )
 
+    # --------------------------------------------------
+    # Run Workflow
+    # --------------------------------------------------
+
     if st.button(
         "🚀 Generate Research Analysis",
+
         type="primary"
     ):
 
         with st.spinner(
-            "Running research workflow..."
+            "Running workflow..."
         ):
 
             result = run_workflow(
                 question
             )
 
-            st.session_state[
-                "workflow_result"
-            ] = result
+        st.session_state[
+            "workflow_result"
+        ] = result
 
         st.success(
             "Research analysis completed."
         )
 
     # --------------------------------------------------
-    # Stop Until Analysis Exists
+    # Wait
     # --------------------------------------------------
 
     if (
@@ -173,7 +184,8 @@ Generate research insights using:
     )
 
     st.caption(
-        f"{len(result.get('papers', []))} papers retrieved"
+        f"{len(result.get('papers', []))} "
+        f"papers retrieved"
     )
 
     for paper in result.get(
@@ -183,38 +195,27 @@ Generate research insights using:
 
         with st.expander(
             paper.get(
-                "title",
-                "Unknown Paper"
+                "title"
             )
         ):
 
             st.write(
                 f"**Published:** "
-                f"{paper.get('published', 'N/A')}"
+                f"{paper.get('published')}"
             )
 
-            authors = paper.get(
-                "authors",
-                []
+            st.write(
+                f"**Authors:** "
+                f"{', '.join(paper.get('authors', []))}"
             )
-
-            if authors:
-
-                st.write(
-                    "**Authors:**"
-                )
-
-                st.write(
-                    ", ".join(authors)
-                )
 
             st.write(
                 f"**URL:** "
-                f"{paper.get('url', 'N/A')}"
+                f"{paper.get('url')}"
             )
 
     # --------------------------------------------------
-    # Statistical Findings
+    # Analysis
     # --------------------------------------------------
 
     st.header(
@@ -229,7 +230,7 @@ Generate research insights using:
     )
 
     # --------------------------------------------------
-    # GPT Output
+    # GPT Analysis
     # --------------------------------------------------
 
     st.header(
@@ -239,14 +240,14 @@ Generate research insights using:
     st.markdown(
         result.get(
             "hypothesis",
-            "No hypothesis generated."
+            ""
         )
     )
 
     st.divider()
 
     # --------------------------------------------------
-    # Review Section
+    # Human Review
     # --------------------------------------------------
 
     st.header(
@@ -255,10 +256,12 @@ Generate research insights using:
 
     approval = st.radio(
         "Review Decision",
+
         [
             "Approve",
             "Reject"
         ],
+
         horizontal=True
     )
 
@@ -272,8 +275,10 @@ Generate research insights using:
             else "no"
         )
 
-        updated_result = report_agent(
-            result
+        updated_result = (
+            report_agent(
+                result
+            )
         )
 
         st.session_state[
@@ -288,7 +293,7 @@ Generate research insights using:
         st.rerun()
 
     # --------------------------------------------------
-    # Refresh Result
+    # Refresh state
     # --------------------------------------------------
 
     result = st.session_state[
@@ -310,13 +315,15 @@ Generate research insights using:
         )
 
         st.text_area(
-            label="Report",
+            "Report",
+
             value=result["report"],
+
             height=500
         )
 
     # --------------------------------------------------
-    # PDF Download
+    # Latest PDF
     # --------------------------------------------------
 
     pdf_path = result.get(
@@ -326,13 +333,16 @@ Generate research insights using:
 
     if (
         pdf_path
-        and os.path.exists(pdf_path)
+        and
+        os.path.exists(
+            pdf_path
+        )
     ):
 
         st.divider()
 
         st.header(
-            "📥 Download PDF Report"
+            "📥 Download Latest PDF"
         )
 
         with open(
@@ -341,19 +351,38 @@ Generate research insights using:
         ) as pdf_file:
 
             st.download_button(
-                label="Download PDF",
-                data=pdf_file.read(),
-                file_name=os.path.basename(
+                label=
+                "Download Latest PDF",
+
+                data=
+                pdf_file.read(),
+
+                file_name=
+                os.path.basename(
                     pdf_path
                 ),
-                mime="application/pdf"
+
+                mime=
+                "application/pdf"
             )
 
-        st.success(
-            f"PDF Ready: "
-            f"{os.path.basename(pdf_path)}"
-        )
+    # --------------------------------------------------
+    # History Dashboard
+    # --------------------------------------------------
+
+    st.divider()
+
+    render_history_dashboard()
+
+    # --------------------------------------------------
+    # PDF Library
+    # --------------------------------------------------
+
+    st.divider()
+
+    render_pdf_library()
 
 
 if __name__ == "__main__":
+
     main()
