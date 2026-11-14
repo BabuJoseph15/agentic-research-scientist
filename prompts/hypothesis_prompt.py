@@ -1,10 +1,6 @@
 """
 Hypothesis Prompt Builder.
 
-Contains reusable prompt templates used by the
-Hypothesis Agent for generating scientific
-reasoning and hypotheses.
-
 Author:
     Babu Guduru
 
@@ -12,65 +8,74 @@ Project:
     Agentic Research Scientist
 
 Version:
-    0.6
+    1.2
 """
 
 
 def build_hypothesis_prompt(
     question: str,
     evidence: list,
-    analysis: dict
-) -> str:
+    analysis: dict,
+    similar_research: str
+):
     """
-    Build GPT-4o hypothesis generation prompt.
+    Build GPT prompt using:
+
+    - Previous memory
+    - Current literature
+    - Statistical findings
 
     Args:
         question (str):
             Research question.
 
         evidence (list):
-            Extracted evidence.
+            Research evidence.
 
         analysis (dict):
-            Statistical findings.
+            Statistical results.
+
+        similar_research (str):
+            Retrieved memory.
 
     Returns:
         str:
-            Formatted prompt.
+            Prompt text.
     """
 
     return f"""
-You are a Senior Research Scientist specializing in:
+You are a Senior Research Scientist.
 
-- Epidemiology
-- Climate Science
-- Public Health
-- Data Analysis
+Research Question
+-----------------
 
-Research Question:
-------------------
 {question}
 
-Research Evidence:
-------------------
+Previous Similar Research
+-------------------------
+
+{similar_research}
+
+Current Research Evidence
+-------------------------
+
 {evidence}
 
-Statistical Findings:
-------------------
+Statistical Findings
+--------------------
+
 {analysis}
 
-Instructions:
+Instructions
 
-Analyze the research evidence and statistical findings.
+1. Review previous research memory.
+2. Identify patterns from memory.
+3. Review current evidence.
+4. Analyze statistical findings.
+5. Compare historical and current evidence.
+6. Generate a scientific hypothesis.
 
-Return your response using only the sections below.
-
-Do not use markdown symbols such as:
-**, #, -, or bullet formatting.
-
-Use plain text.
-
-Required Sections:
+Return ONLY the following sections:
 
 Summary of Evidence
 
@@ -85,7 +90,4 @@ Confidence Level
 Scientific Hypothesis
 
 Future Research Recommendations
-
-Keep the writing concise, scientific,
-and suitable for an executive report.
 """

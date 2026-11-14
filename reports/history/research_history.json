@@ -65,6 +65,18 @@
             "question": "Can climate change increase dengue outbreaks in India?",
             "approval": "yes",
             "hypothesis": "Summary of Evidence\n\nThe research evidence indicates a potential link between climate change and increased dengue outbreaks. Studies highlight changes in precipitation patterns and temperature extremes, which are critical factors in dengue transmission. The multi-criterion simulation model and data-driven forecasts emphasize the role of climate conditions in predicting dengue outbreaks.\n\nStatistical Interpretation\n\nThe statistical findings show high correlation coefficients for temperature (0.9882), humidity (0.9859), and rainfall (0.9898) with dengue outbreaks. These values suggest a strong relationship between these climatic factors and the incidence of dengue.\n\nKey Risk Factors\n\nThe primary risk factors identified are increased temperature, higher humidity, and altered rainfall patterns. These factors create favorable conditions for mosquito breeding and virus transmission, thereby increasing the risk of dengue outbreaks.\n\nLimitations\n\nThe evidence is limited by geographical specificity, with some studies focusing on regions outside India. Additionally, the data may not account for other socio-economic and environmental factors influencing dengue transmission.\n\nConfidence Level\n\nThe confidence level in the relationship between climate change and increased dengue outbreaks is high, supported by strong statistical correlations and multiple studies indicating similar findings.\n\nScientific Hypothesis\n\nClimate change, characterized by increased temperature, humidity, and altered rainfall patterns, is likely to increase the frequency and intensity of dengue outbreaks in India.\n\nFuture Research Recommendations\n\nFuture research should focus on region-specific studies in India to better understand local climate impacts on dengue transmission. Longitudinal studies incorporating socio-economic factors and adaptive strategies are recommended to develop comprehensive predictive models."
+        },
+        {
+            "timestamp": "2026-11-14T15:55:42.673325",
+            "question": "Can climate change increase dengue outbreaks in India?",
+            "approval": "yes",
+            "hypothesis": "Unable to generate hypothesis."
+        },
+        {
+            "timestamp": "2026-11-14T15:55:46.650248",
+            "question": "Can climate change increase dengue outbreaks in India?",
+            "approval": "yes",
+            "hypothesis": "Unable to generate hypothesis."
         }
     ]
 }
