@@ -3,16 +3,6 @@ Agentic Research Scientist.
 
 Streamlit Application.
 
-Features:
-
-1. Research Analysis
-2. ChromaDB Memory Retrieval
-3. GPT-4o Scientific Reasoning
-4. Human Review
-5. PDF Report Generation
-6. Research History Dashboard
-7. PDF Library
-
 Author:
     Babu Guduru
 
@@ -42,7 +32,7 @@ if str(PROJECT_ROOT) not in sys.path:
 
 
 # --------------------------------------------------
-# Application Imports
+# Imports
 # --------------------------------------------------
 
 from graph.ui_workflow import (
@@ -68,7 +58,7 @@ from ui.components.pdf_library import (
 
 
 # --------------------------------------------------
-# Workflow State
+# State Helpers
 # --------------------------------------------------
 
 def initialize_state():
@@ -85,10 +75,6 @@ def initialize_state():
     }
 
 
-# --------------------------------------------------
-# Workflow Execution
-# --------------------------------------------------
-
 def run_workflow(
     question: str
 ):
@@ -103,7 +89,7 @@ def run_workflow(
 
 
 # --------------------------------------------------
-# Main Application
+# Main
 # --------------------------------------------------
 
 def main():
@@ -120,6 +106,28 @@ def main():
     st.title(
         "🔬 Agentic Research Scientist"
     )
+
+    # --------------------------------------------------
+    # Session State
+    # --------------------------------------------------
+
+    if (
+        "report_generated"
+        not in st.session_state
+    ):
+
+        st.session_state[
+            "report_generated"
+        ] = False
+
+    if (
+        "workflow_result"
+        not in st.session_state
+    ):
+
+        st.session_state[
+            "workflow_result"
+        ] = None
 
     st.markdown(
         """
@@ -159,16 +167,19 @@ Generate research insights using:
         )
 
         question = st.text_area(
-            label="Enter Research Question",
+            label=
+            "Enter Research Question",
+
             value=(
                 "Can climate change increase "
                 "dengue outbreaks in India?"
             ),
+
             height=120
         )
 
         # ----------------------------------------------
-        # Memory Statistics
+        # Memory Stats
         # ----------------------------------------------
 
         col1, col2 = st.columns(2)
@@ -188,7 +199,7 @@ Generate research insights using:
             )
 
         # ----------------------------------------------
-        # Similar Memory Preview
+        # Similar Research
         # ----------------------------------------------
 
         if question:
@@ -205,12 +216,6 @@ Generate research insights using:
                 and
                 "documents"
                 in memory_results
-                and
-                len(
-                    memory_results[
-                        "documents"
-                    ]
-                ) > 0
             ):
 
                 docs = (
@@ -247,6 +252,10 @@ Generate research insights using:
             type="primary"
         ):
 
+            st.session_state[
+                "report_generated"
+            ] = False
+
             with st.spinner(
                 "Running research workflow..."
             ):
@@ -265,15 +274,13 @@ Generate research insights using:
                 "Research analysis completed."
             )
 
-        if (
+        result = st.session_state.get(
             "workflow_result"
-            not in st.session_state
-        ):
-            return
+        )
 
-        result = st.session_state[
-            "workflow_result"
-        ]
+        if not result:
+
+            return
 
         # ----------------------------------------------
         # Research Papers
@@ -316,7 +323,7 @@ Generate research insights using:
                 )
 
         # ----------------------------------------------
-        # Statistics
+        # Analysis
         # ----------------------------------------------
 
         st.header(
@@ -364,8 +371,18 @@ Generate research insights using:
             )
         )
 
-        if st.button(
-            "📄 Generate Final Report"
+        # ----------------------------------------------
+        # Generate Report
+        # ----------------------------------------------
+
+        if (
+            st.button(
+                "📄 Generate Final Report"
+            )
+            and
+            not st.session_state[
+                "report_generated"
+            ]
         ):
 
             result["approval"] = (
@@ -385,6 +402,10 @@ Generate research insights using:
                 "workflow_result"
             ] = updated_result
 
+            st.session_state[
+                "report_generated"
+            ] = True
+
             st.success(
                 f"Hypothesis "
                 f"{review_decision.lower()}d."
@@ -393,12 +414,12 @@ Generate research insights using:
             st.rerun()
 
         # ----------------------------------------------
-        # Refresh Session State
+        # Refresh Result
         # ----------------------------------------------
 
-        result = st.session_state[
+        result = st.session_state.get(
             "workflow_result"
-        ]
+        )
 
         # ----------------------------------------------
         # Final Report
@@ -412,16 +433,13 @@ Generate research insights using:
                 "📑 Final Research Report"
             )
 
-            st.text_area(
-                label="Generated Report",
-                value=result[
-                    "report"
-                ],
-                height=500
+            st.code(
+                result["report"],
+                language="text"
             )
 
         # ----------------------------------------------
-        # Download Latest PDF
+        # Latest PDF
         # ----------------------------------------------
 
         pdf_path = result.get(
@@ -444,14 +462,14 @@ Generate research insights using:
             with open(
                 pdf_path,
                 "rb"
-            ) as file:
+            ) as pdf_file:
 
                 st.download_button(
                     label=
                     "Download Latest PDF",
 
                     data=
-                    file.read(),
+                    pdf_file.read(),
 
                     file_name=
                     os.path.basename(
@@ -459,7 +477,10 @@ Generate research insights using:
                     ),
 
                     mime=
-                    "application/pdf"
+                    "application/pdf",
+
+                    key=
+                    "latest_pdf"
                 )
 
     # ==================================================
@@ -480,7 +501,7 @@ Generate research insights using:
 
 
 # --------------------------------------------------
-# Entrypoint
+# Entry
 # --------------------------------------------------
 
 if __name__ == "__main__":

@@ -4,10 +4,16 @@ Hypothesis Agent.
 Generates scientific hypotheses
 using GPT-4o.
 
-Enhanced with ChromaDB memory.
+Enhanced with ChromaDB memory retrieval.
 
 Author:
     Babu Guduru
+
+Project:
+    Agentic Research Scientist
+
+Version:
+    1.2
 """
 
 from services.llm_service import llm
@@ -24,6 +30,17 @@ from utils.logger import logger
 
 
 def hypothesis_agent(state):
+    """
+    Generate scientific hypothesis.
+
+    Args:
+        state (dict):
+            Workflow state.
+
+    Returns:
+        dict:
+            Updated workflow state.
+    """
 
     logger.info(
         "Hypothesis Agent Started"
@@ -31,27 +48,27 @@ def hypothesis_agent(state):
 
     try:
 
-        # ------------------------------------
-        # Memory Retrieval
-        # ------------------------------------
+        # ------------------------------------------
+        # Retrieve Memory
+        # ------------------------------------------
 
         memory_results = (
             retrieve_similar_research(
-                state["question"]
+                state["question"],
+                top_k=3
             )
         )
 
-        memory_context = ""
+        memory_context = (
+            "No previous research found."
+        )
 
         if (
             memory_results
             and
-            "documents"
-            in memory_results
+            "documents" in memory_results
             and
-            len(
-                memory_results["documents"]
-            ) > 0
+            memory_results["documents"]
         ):
 
             documents = (
@@ -60,25 +77,38 @@ def hypothesis_agent(state):
                 ][0]
             )
 
-            for idx, document in enumerate(
-                documents,
-                start=1
-            ):
+            if documents:
 
-                memory_context += (
-                    f"\nResearch {idx}\n"
-                    f"{document[:1000]}\n"
+                logger.info(
+                    f"Retrieved "
+                    f"{len(documents)} "
+                    f"similar research documents."
                 )
 
-        else:
+                memory_sections = []
 
-            memory_context = (
-                "No similar research found."
-            )
+                for idx, document in enumerate(
+                    documents,
+                    start=1
+                ):
 
-        # ------------------------------------
-        # Prompt
-        # ------------------------------------
+                    memory_sections.append(
+                        f"""
+Research {idx}
+
+{document[:1500]}
+"""
+                    )
+
+                memory_context = (
+                    "\n".join(
+                        memory_sections
+                    )
+                )
+
+        # ------------------------------------------
+        # Build Prompt
+        # ------------------------------------------
 
         prompt = (
             build_hypothesis_prompt(
@@ -95,6 +125,10 @@ def hypothesis_agent(state):
                 memory_context
             )
         )
+
+        # ------------------------------------------
+        # GPT Invocation
+        # ------------------------------------------
 
         response = (
             llm.invoke(prompt)
@@ -115,8 +149,8 @@ def hypothesis_agent(state):
         )
 
         state["hypothesis"] = (
-            "Unable to generate "
-            "hypothesis."
+            f"Unable to generate "
+            f"hypothesis: {str(ex)}"
         )
 
     return state
