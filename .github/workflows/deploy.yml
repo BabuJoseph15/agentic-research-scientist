@@ -1,4 +1,4 @@
-name: Deploy to Amazon ECR
+name: Deploy Agentic Research Scientist
 
 on:
 
@@ -6,14 +6,25 @@ on:
     branches:
       - master
 
+env:
+  AWS_REGION: ap-southeast-2
+  ECR_REPOSITORY: agentic-research-scientist
+  ECR_REGISTRY: 774055931904.dkr.ecr.ap-southeast-2.amazonaws.com
+  IMAGE_TAG: latest
+
 jobs:
 
-  docker-build-and-push:
+  build-and-push:
+
+    name: Build and Push to ECR
 
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
+
+    outputs:
+      image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
     steps:
 
@@ -33,15 +44,68 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t agentic-research-scientist .
+          docker build \
+            -t $ECR_REPOSITORY:$IMAGE_TAG .
 
       - name: Tag Docker Image
         run: |
           docker tag \
-          agentic-research-scientist:latest \
-          774055931904.dkr.ecr.ap-southeast-2.amazonaws.com/agentic-research-scientist:latest
+            $ECR_REPOSITORY:$IMAGE_TAG \
+            $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
       - name: Push Docker Image
         run: |
           docker push \
-          774055931904.dkr.ecr.ap-southeast-2.amazonaws.com/agentic-research-scientist:latest
+            $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+  deploy-to-ec2:
+
+    name: Deploy to EC2
+
+    needs: build-and-push
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Deploy Application
+        uses: appleboy/ssh-action@v1.0.3
+
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+
+          script: |
+
+            set -e
+
+            echo "Logging into ECR..."
+
+            aws ecr get-login-password \
+            --region ap-southeast-2 | docker login \
+            --username AWS \
+            --password-stdin \
+            774055931904.dkr.ecr.ap-southeast-2.amazonaws.com
+
+            echo "Stopping existing container..."
+
+            docker stop agentic-research-scientist || true
+
+            docker rm agentic-research-scientist || true
+
+            echo "Pulling latest image..."
+
+            docker pull \
+            774055931904.dkr.ecr.ap-southeast-2.amazonaws.com/agentic-research-scientist:latest
+
+            echo "Starting new container..."
+
+            docker run -d \
+              --name agentic-research-scientist \
+              --restart unless-stopped \
+              -p 8501:8501 \
+              --env-file /home/ubuntu/.env \
+              774055931904.dkr.ecr.ap-southeast-2.amazonaws.com/agentic-research-scientist:latest
+
+            echo "Deployment completed."
