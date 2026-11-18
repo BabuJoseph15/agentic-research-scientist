@@ -22,4 +22,4 @@ build/
 .env
 reports/*.pdf
 cache/
-__pycache__/
+__pycache__/awscliv2.zip
