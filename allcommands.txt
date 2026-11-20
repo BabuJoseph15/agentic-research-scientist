@@ -1,0 +1,65 @@
+Agentic Research Scientist - Deployment & Operations Runbook 
+
+This document consolidates the primary commands used during development, Dockerization, AWS deployment, ECR integration, GitHub Actions CI/CD setup, and Nginx configuration. 
+
+Git Commands 
+
+git status 
+
+git add . 
+
+git commit -m "message" 
+
+git push origin master 
+
+git pull origin master 
+
+git tag -a v1.3.0 -m "AWS deployment with CI/CD" 
+
+git push origin v1.3.0 
+
+Docker Commands 
+
+docker build -t agentic-research-scientist . 
+
+docker images 
+
+docker ps 
+
+docker ps -a 
+
+docker logs -f agentic-research-scientist 
+
+docker stop agentic-research-scientist 
+
+docker rm agentic-research-scientist 
+
+AWS & ECR 
+
+aws sts get-caller-identity 
+
+aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 774055931904.dkr.ecr.ap-southeast-2.amazonaws.com 
+
+docker pull 774055931904.dkr.ecr.ap-southeast-2.amazonaws.com/agentic-research-scientist:latest 
+
+Nginx 
+
+sudo systemctl status nginx 
+
+sudo nginx -t 
+
+sudo systemctl reload nginx 
+
+Diagnostics 
+
+df -h 
+
+lsblk 
+
+docker system df 
+
+docker system prune -a -f 
+
+nslookup research.babuguduru.com 
+
+dig NS babuguduru.com 
